@@ -5,7 +5,13 @@ RSpec.describe DatabaseObjects do
     expect(DatabaseObjects::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  it 'loads a series' do
+    series = Series.from('(SELECT generate_series(1, 3) AS index) series')
+
+    expect(series.to_a).to contain_exactly(
+      have_attributes(index: 1),
+      have_attributes(index: 2),
+      have_attributes(index: 3),
+    )
   end
 end

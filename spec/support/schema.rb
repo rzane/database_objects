@@ -13,7 +13,3 @@ end
 
 class Person < ActiveRecord::Base
 end
-
-class Series < ActiveRecord::Base
-  include DatabaseObjects::Schema
-end

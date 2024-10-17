@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "database_objects"
+require_relative "support/schema"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

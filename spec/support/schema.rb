@@ -32,7 +32,7 @@ class MostRecentPost < ActiveRecord::Base
 
   belongs_to :person
 
-  declare_view do
+  view do
     Post.order(:person_id, created_at: :desc).select('DISTINCT ON (person_id) posts.*')
   end
 end
@@ -41,7 +41,7 @@ class SeriesView < ActiveRecord::Base
   extend DatabaseObjects::Schema
   extend DatabaseObjects::View
 
-  declare_view <<~SQL
+  view <<~SQL
     SELECT generate_series(1, 3) AS index
   SQL
 end
@@ -50,5 +50,5 @@ class SeriesFunction < ActiveRecord::Base
   extend DatabaseObjects::Schema
   extend DatabaseObjects::Function
 
-  declare_function :generate_series
+  function :generate_series
 end

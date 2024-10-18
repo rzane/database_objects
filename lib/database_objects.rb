@@ -12,7 +12,7 @@ module DatabaseObjects
   end
 
   module View
-    def declare_view(sql = nil, &block)
+    def view(sql = nil, &block)
       block ||= -> { Arel.sql(sql) }
 
       define_singleton_method :cte do
@@ -24,7 +24,7 @@ module DatabaseObjects
   end
 
   module Function
-    def declare_function(name)
+    def function(name)
       define_singleton_method :cte do |*args|
         function = Arel::Nodes::NamedFunction.new(name.to_s, args)
         { table_name => select(Arel.star).from(function) }

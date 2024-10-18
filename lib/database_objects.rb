@@ -13,19 +13,24 @@ module DatabaseObjects
 
   module View
     def declare_view(sql = nil, &block)
-      if block
-        default_scope { from(block.call, table_name) }
-      else
-        default_scope { from("(#{sql}) #{table_name}") }
+      block ||= -> { Arel.sql(sql) }
+
+      define_singleton_method :cte do
+        { table_name => block.call }
       end
+
+      default_scope { with(cte) }
     end
   end
 
   module Function
     def declare_function(name)
-      define_singleton_method :execute do |*args|
-        from(Arel::Nodes::NamedFunction.new(name.to_s, args, table_name))
+      define_singleton_method :cte do |*args|
+        function = Arel::Nodes::NamedFunction.new(name.to_s, args)
+        { table_name => select(Arel.star).from(function) }
       end
+
+      scope :execute, ->(*args) { with(cte(*args)) }
     end
   end
 end

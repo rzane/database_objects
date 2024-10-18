@@ -37,10 +37,10 @@ RSpec.describe DatabaseObjects do
       expect(person.most_recent_post.id).to eq(post.id)
     end
 
-    pending 'supports joins' do
+    it 'supports joins (with a little bit of creativity)' do
       person = Person.create!(name: 'Gary')
       post = Post.create!(person:, content: 'Latest', created_at: 1.week.ago)
-      person = Person.joins(:most_recent_post).sole
+      person = Person.with(MostRecentPost.cte).joins(:most_recent_post).sole
 
       expect(person.most_recent_post.id).to eq(post.id)
     end
@@ -49,9 +49,9 @@ RSpec.describe DatabaseObjects do
   describe 'declare_function' do
     it 'can be executed' do
       expect(SeriesFunction.execute(1, 3)).to contain_exactly(
-        have_attributes(series_functions: 1),
-        have_attributes(series_functions: 2),
-        have_attributes(series_functions: 3)
+        have_attributes(generate_series: 1),
+        have_attributes(generate_series: 2),
+        have_attributes(generate_series: 3)
       )
     end
   end

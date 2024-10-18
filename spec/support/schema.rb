@@ -9,17 +9,31 @@ ActiveRecord::Schema.define do
   create_table :people, force: true do |t|
     t.string :name
   end
+
+  create_table :posts, force: true do |t|
+    t.string :content
+    t.belongs_to :person
+    t.datetime :created_at, precision: 6
+  end
 end
 
 class Person < ActiveRecord::Base
+  has_many :posts
+  has_one :most_recent_post
 end
 
-class GaryView < ActiveRecord::Base
+class Post < ActiveRecord::Base
+  belongs_to :person
+end
+
+class MostRecentPost < ActiveRecord::Base
   extend DatabaseObjects::Schema
   extend DatabaseObjects::View
 
+  belongs_to :person
+
   declare_view do
-    Person.where(name: 'Gary')
+    Post.order(:person_id, created_at: :desc).select('DISTINCT ON (person_id) posts.*')
   end
 end
 

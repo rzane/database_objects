@@ -9,7 +9,7 @@ RSpec.describe DatabaseObjects do
     end
   end
 
-  it "has a version number" do
+  it 'has a version number' do
     expect(DatabaseObjects::VERSION).not_to be nil
   end
 
@@ -23,10 +23,18 @@ RSpec.describe DatabaseObjects do
     end
 
     it 'acts like a view with ActiveRecord' do
-      Person.create!(name: 'Gary')
-      Person.create!(name: 'Other')
+      person = Person.create!(name: 'Gary')
+      post = Post.create!(person:, content: 'Latest', created_at: 1.week.ago)
+      Post.create!(person:, content: 'Oldest', created_at: 2.weeks.ago)
 
-      expect(GaryView.all).to contain_exactly(have_attributes(name: 'Gary'))
+      expect(MostRecentPost.all).to contain_exactly(have_attributes(person:, id: post.id))
+    end
+
+    it 'supports associations' do
+      person = Person.create!(name: 'Gary')
+      post = Post.create!(person:, content: 'Latest', created_at: 1.week.ago)
+
+      expect(person.most_recent_post.id).to eq(post.id)
     end
   end
 

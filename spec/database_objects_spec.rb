@@ -36,6 +36,14 @@ RSpec.describe DatabaseObjects do
 
       expect(person.most_recent_post.id).to eq(post.id)
     end
+
+    pending 'supports joins' do
+      person = Person.create!(name: 'Gary')
+      post = Post.create!(person:, content: 'Latest', created_at: 1.week.ago)
+      person = Person.joins(:most_recent_post).sole
+
+      expect(person.most_recent_post.id).to eq(post.id)
+    end
   end
 
   describe 'declare_function' do
